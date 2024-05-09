@@ -7,7 +7,6 @@ torchvision
 tqdm
 matplotlib
 numpy
-copy
 pandas
 opencv-python
 argparse
