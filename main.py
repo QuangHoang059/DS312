@@ -37,9 +37,7 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
 
     #load dataset csv
 
-    df_train = load_df( dir_caption = train_captions, 
-                      dir_concepts = train_concepts,
-                  )
+    df_train = load_df( dir_caption = train_captions)
     
 
     #load weights

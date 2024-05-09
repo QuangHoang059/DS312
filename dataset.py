@@ -31,8 +31,7 @@ class ImgCaptionDataset(Dataset):
             image = cv2.imread(img_path)
         return image
     
-    def get_concepts_by_id(self, iid):
-        return list(self.df["Concepts"][self.df["ID"] == iid])[0]
+   
     
     def __len__(self):
         return len(self.ids)
@@ -42,7 +41,6 @@ class ImgCaptionDataset(Dataset):
         image = self.get_image_by_id(iid) 
         image = cv2.resize(image,self.image_size)
         caption = self.get_caption_by_id(iid)
-        concepts = ";".join(self.get_concepts_by_id(iid))
         encoding = self.processor(images=image, 
                                   text= caption, 
                                   padding="max_length",
