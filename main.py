@@ -10,13 +10,16 @@ import os
 
 from tqdm import tqdm
 
-
+import cv2
 import wandb
 import os
 import matplotlib.pyplot as plt
 import copy
 from dataset import ImgCaptionDataset
 import argparse
+def save_df_to_csv(df, file_path):
+    df.to_csv(file_path, index=False)
+
 def load_df (dir_caption ) :
     return pd.read_csv(dir_caption, delimiter=",")
 def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_weights  = False,  path_weights="./",preprocessing = False):
@@ -24,6 +27,13 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
     """
     Function training
     root_path: root forder of dataset
+    batch_size: batch size
+    num_epochs: number of epochs
+    lr: learning rate
+    log_wandb: log to wandb
+    load_weights: load weights
+    path_weights: path for weights
+    preprocessing: preprocessing
     
     """
     #Define paths
@@ -99,6 +109,55 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
             
         torch.save(model.state_dict(), path_weights+"medblip_large.pth") 
         print("Loss:", loss.item())
+def predict(root_path,path_weights="./"):
+    """
+    root_path: root forder of dataset
+    path_weights: path for weights file
+    """
+    processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
+    model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
+   
+    model.load_state_dict(torch.load(path_weights))
+    model.eval()
+    model.to("cuda")
+
+
+    df_valid = os.path.join(root_path, "valid_captions.csv") 
+    df_valid = pd.read_csv(df_valid)
+    dir_valid = os.path.join(root_path,"valid")
+
+    dir_test = os.path.join(root_path,"test")
+    dir_caption = os.path.join(root_path, "valid_captions.csv")
+
+    test_ID = os.listdir(dir_test)
+    for i in range(len(test_ID)):
+        test_ID[i] = test_ID[i].replace(".jpg","")
+    def get_inferences(IDs, model, paths, max_new_tokens=200):
+        data = []
+        for ID in tqdm(IDs):
+            path = os.path.join(paths, ID + ".jpg")
+            image = cv2.imread(path)
+            image = cv2.resize(image, (224, 224))
+            inputs = processor(image, return_tensors="pt").to("cuda")
+            generated_ids = model.generate(**inputs,
+                                        max_new_tokens=max_new_tokens,
+                                            no_repeat_ngram_size=2,
+                                        num_beams = 5)
+            generated_text = processor.batch_decode(generated_ids, skip_special_tokens=True)[0].strip()
+            data.append([ID, generated_text])
+
+        df = pd.DataFrame(data, columns=['ID', 'Caption'])
+        return df
+    
+    test_results = get_inferences(test_ID, model, dir_test)
+    save_df_to_csv(test_results, "run.csv")
+
+
+    valid_ID = df_valid["ID"]
+    valid_results = get_inferences(valid_ID, model, dir_valid)
+    save_df_to_csv(valid_results, "valid.csv")
+    len(valid_results)
+
 def main():
     # Initializes a parser for command-line arguments.
     parser = argparse.ArgumentParser()
@@ -120,6 +179,14 @@ def main():
     parser_train.add_argument('--load_weights', type=bool,default=False)
     
     parser_train.add_argument('--path_weights', type=str,default='./')
+    # Adds a subparser for the 'predict' command.
+    parser_predict = subparsers.add_parser('predict')
+
+    # Adds an argument for the directory containing public data.
+    parser_predict.add_argument('--root_path', type=str,default='./')
+
+    parser_predict.add_argument('--path_weights', type=str,default='./')
+
     # Parses the command-line arguments.
     args = parser.parse_args()
 
@@ -128,6 +195,11 @@ def main():
         # Checks if the 'train' command was given.
         # Calls the function to train the model.
         train(args.root_path, args.batch_size, args.num_epochs,args.lr, args.log_wandb,args.load_weights,args.path_weights)
+        pass
+    elif args.command == 'predict':
+        # Checks if the 'predict' command was given.
+        # Calls the function to predict the model.
+        predict(args.root_path, args.path_weights)
         pass
     
 # Checks if the script is being run as the main program.
