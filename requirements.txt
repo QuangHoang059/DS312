@@ -8,5 +8,4 @@ tqdm
 matplotlib
 numpy
 pandas
-opencv-python
 argparse
