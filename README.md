@@ -23,5 +23,5 @@ python main.py predict
     --path_weights={path file weight path  weight default }
 ```
 
-Lưu ý path_weights ở predict sẽ là path của file wight.
+Lưu ý path_weights ở predict sẽ là path của file wight.  
 Đầu ra của predict sẽ là 2 file run.csv và valid.csv lần lượt là caption dự đoạn của tập test và tập valid
