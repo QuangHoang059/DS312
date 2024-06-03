@@ -6,6 +6,7 @@ import numpy as np
 from torch.utils.data import Dataset, DataLoader
 
 class ImgCaptionDataset(Dataset):
+    """Dataset for image captioning."""
     def __init__(self, 
                  df, 
                  path,

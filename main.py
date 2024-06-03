@@ -21,6 +21,9 @@ def save_df_to_csv(df, file_path):
     df.to_csv(file_path, index=False)
 
 def load_df (dir_caption ) :
+    """
+    Function load dataframe
+    """
     return pd.read_csv(dir_caption, delimiter=",")
 def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_weights  = False,  path_weights="./",preprocessing = False):
 
@@ -114,6 +117,7 @@ def predict(root_path,path_weights="./"):
     root_path: root forder of dataset
     path_weights: path for weights file
     """
+    ## Load weights pretrained
     processor = AutoProcessor.from_pretrained("Salesforce/blip-image-captioning-large")
     model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-image-captioning-large")
    
@@ -133,6 +137,9 @@ def predict(root_path,path_weights="./"):
     for i in range(len(test_ID)):
         test_ID[i] = test_ID[i].replace(".jpg","")
     def get_inferences(IDs, model, paths, max_new_tokens=200):
+        """
+        Function to get inferences
+        """
         data = []
         for ID in tqdm(IDs):
             path = os.path.join(paths, ID + ".jpg")
@@ -148,11 +155,11 @@ def predict(root_path,path_weights="./"):
 
         df = pd.DataFrame(data, columns=['ID', 'Caption'])
         return df
-    
+        ## Get inferences test
     test_results = get_inferences(test_ID, model, dir_test)
     save_df_to_csv(test_results, "run.csv")
 
-
+        ## Get inferences train
     valid_ID = df_valid["ID"]
     valid_results = get_inferences(valid_ID, model, dir_valid)
     save_df_to_csv(valid_results, "valid.csv")
