@@ -1,27 +1,51 @@
-# DS312
+# TEAM 2Q2T
 
-## Train
+- Phan Văn Thiện
+- Phan Tiến Quân
+- Nguyễn Khánh Trình
+- Hoàng Anh Đức Đăng Quang
+
+## Introduction
+
+In the ImageCLEFmedical 2024 Caption competition, our team utilized the MedBLIP model and achieved significant results. Below are the methods we used for training, predicting, and evaluating our model.
+
+## Training
+
+To train the model, use the following command:
 
 ```
 python main.py train
-    --root_path={ path folder default ./}
-    --batch_size={ num batch_size default 4}
-    --num_epochs={num num_epochs default 16}
-    --lr={ num lr default 1e-5}
-    --log_wandb={true or false is want use wandb  }
-    --load_weights={true or false is load weight trained}
-    --path_weights={path folder weight path  weight default ./}
+    --root_path={path to folder, default: ./}
+    --batch_size={number of batches, default: 4}
+    --num_epochs={number of epochs, default: 16}
+    --lr={learning rate, default: 1e-5}
+    --log_wandb={true or false, whether to use wandb for logging}
+    --load_weights={true or false, whether to load pre-trained weights}
+    --path_weights={path to weights folder, default: ./}
 ```
 
-Lưu ý tên filde weight sẽ đc lưu tự động có thể sửa trong code, nó sẽ được lưu tại path_weights. path_weights vừa là file load vừa là file lưu để thực hiện train liên tục. File sẽ có tên như sau medblip_large.pth.
+Note: The weight file name will be saved automatically and can be adjusted in the code. It will be saved in path_weights, which serves as both the load and save path for continuous training. The file will be named medblip_large.pth.
 
-## Predict
+## Prediction
+
+To generate predictions, use the following command:
 
 ```
 python main.py predict
-    --root_path={ path folder default ./}
-    --path_weights={path file weight path  weight default }
+    --root_path={path to folder, default: ./} \
+    --path_weights={path to the weights file, default: ./medblip_large.pth}
 ```
 
-Lưu ý path_weights ở predict sẽ là path của file wight.  
-Đầu ra của predict sẽ là 2 file run.csv và valid.csv lần lượt là caption dự đoạn của tập test và tập valid
+Note: The path_weights parameter in predict should be the path to the weight file.
+The prediction output will consist of two files: run.csv and valid.csv, which correspond to the predicted captions for the test and validation sets, respectively.
+
+## Evaluation
+
+To evaluate the model, use the following command:
+
+```
+python evaluate.py eval
+    --root={path to the dataset for evaluation}
+    --score={type of score: rouge, bleu, meteor, bertscore}
+
+```

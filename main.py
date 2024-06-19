@@ -14,7 +14,7 @@ import cv2
 import wandb
 import os
 import matplotlib.pyplot as plt
-import copy
+
 from dataset import ImgCaptionDataset
 import argparse
 def save_df_to_csv(df, file_path):
