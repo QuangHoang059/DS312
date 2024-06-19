@@ -1,9 +1,12 @@
-# TEAM 2Q2T
+# UIT-2Q2T at ImageCLEFmedical: Multimodal Medical Image Captioning using Bootstrapping Language-Image Pre-training
 
-- Phan Văn Thiện
-- Phan Tiến Quân
-- Nguyễn Khánh Trình
-- Hoàng Anh Đức Đăng Quang
+**Notebook for the UIT-2Q2T Team at CLEF 2024**
+
+**Thien V. Phan, 21522628@gm.uit.edu.vn**  
+**Trinh K. Nguyen, 21522717@gm.uit.edu.vn**  
+**Quang A.D.D. Hoang, 21522509@gm.uit.edu.vn**  
+**Quan T. Phan, 21522502@gm.uit.edu.vn**  
+**Thien B. Nguyen-Tat, thienntb@uit.edu.vn**
 
 ## Introduction
 
