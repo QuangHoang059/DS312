@@ -13,7 +13,7 @@ python main.py train
     --path_weights={path folder weight path  weight default ./}
 ```
 
-Lưu ý tên filde weight sẽ đc lưu tự động có thể sửa trong code, nó sẽ được lưu tại path_weights. path_weights vừa là file load vừa là file lưu để thực hiện train liên tục.
+Lưu ý tên filde weight sẽ đc lưu tự động có thể sửa trong code, nó sẽ được lưu tại path_weights. path_weights vừa là file load vừa là file lưu để thực hiện train liên tục. File sẽ có tên như sau medblip_large.pth.
 
 ## Predict
 

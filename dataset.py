@@ -11,28 +11,22 @@ class ImgCaptionDataset(Dataset):
                  df, 
                  path,
                  processor=None,
-                 preprocessing = False,
                  image_size=(224, 224),
                  max_length=100):
         self.df = df 
         self.image_size = image_size 
         self.max_length = max_length
         self.processor = processor
-        self.preprocessing = preprocessing
+
         self.path = path
         self.ids = list(self.df["ID"])      
     def get_caption_by_id(self, iid):
         return list(self.df["Caption"][self.df['ID'] == iid])
     
     def get_image_by_id(self, iid):
-        if self.preprocessing == True: 
-            image = self.preprocess(iid)
-        else: 
-            img_path = os.path.join(self.path, str(iid) + ".jpg")
-            image = cv2.imread(img_path)
+        img_path = os.path.join(self.path, str(iid) + ".jpg")
+        image = cv2.imread(img_path)
         return image
-    
-   
     
     def __len__(self):
         return len(self.ids)

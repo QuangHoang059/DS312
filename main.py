@@ -25,7 +25,7 @@ def load_df (dir_caption ) :
     Function load dataframe
     """
     return pd.read_csv(dir_caption, delimiter=",")
-def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_weights  = False,  path_weights="./",preprocessing = False):
+def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_weights  = False,  path_weights="./"):
 
     """
     Function training
@@ -36,7 +36,7 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
     log_wandb: log to wandb
     load_weights: load weights
     path_weights: path for weights
-    preprocessing: preprocessing
+
     
     """
     #Define paths
@@ -45,8 +45,7 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
 
     #root captions
     train_captions = os.path.join(root_path, "train_captions.csv")
-    #root concepts
-    train_concepts = os.path.join(root_path, "train_concepts.csv")
+
 
     #load dataset csv
 
@@ -60,7 +59,7 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
     #parama
     image_size = (224, 224)
     max_length = 200
-    valid_num = 2000
+   
     #load weights if load_weights=True
     if load_weights :
         model.load_state_dict(torch.load(path_weights+"medblip_large.pth"))
@@ -73,17 +72,16 @@ def train(root_path ,batch_size=4,num_epochs=2,lr = 1e-5,log_wandb= True,load_we
 
     
     if log_wandb:
-        os.system('wandb login --relogin d473c273fec9fb826260a9468ff9ea10afee7ff6')
-        os.environ['WANDB_PROJECT'] = 'ASR_with_NST'
-        wandb.init(project='MedBLIP2', name=f"MedBlip-large-{num_epochs}epochs-{lr}-lr-2nd-run")
+        os.system('wandb login [YOUR_API_KEY_HERE]')
+        os.environ['WANDB_PROJECT'] = '[YOUR_PROJECT_HERE]'
+        wandb.init(project='MedBLIP2', name="[YOUR_RUN_NAME_HERE]")
 
     # Create dataset for training
     train_dataset = ImgCaptionDataset(df = df_train,
                                     path = train_dir, 
                                     processor = processor,
                                     image_size = image_size,
-                                    max_length = max_length,
-                                    preprocessing = preprocessing
+                                    max_length = max_length
                                     )
     train_dataloader = DataLoader(train_dataset, shuffle=True, batch_size=batch_size)
 
@@ -177,15 +175,13 @@ def main():
 
     # Adds an argument for the directory containing public data.
     parser_train.add_argument('--root_path', type=str,default='./')
-
     parser_train.add_argument('--batch_size', type=int,default=4)
     parser_train.add_argument('--num_epochs', type=int,default=16)
     parser_train.add_argument('--lr', type=float,default=1e-5)
-
     parser_train.add_argument('--log_wandb', type=bool,default=True)
     parser_train.add_argument('--load_weights', type=bool,default=False)
-    
     parser_train.add_argument('--path_weights', type=str,default='./')
+    
     # Adds a subparser for the 'predict' command.
     parser_predict = subparsers.add_parser('predict')
 
